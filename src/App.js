@@ -7,7 +7,6 @@ import ChartOptionsDisplay from './ChartOptionsDisplay';
 import { parseTimestamp } from './helpers/helperFunctions';
 
 const initialStdOptions = {
-  animation: false,
   responsive: true,
   maintainAspectRatio: false,
   elements: {
