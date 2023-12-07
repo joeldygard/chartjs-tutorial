@@ -60,10 +60,17 @@ const ChartOptionsControl = ({ options, setOptions, setChartType, chartType }) =
         });
     };
 
-    
+
 
     const renderLineControls = () => (
         <>
+            <Typography gutterBottom>
+                Fill under lines
+            </Typography>
+            <FormControlLabel
+                control={<Checkbox checked={options.elements.line.fill} onChange={handleFillChange} />}
+                label="Fill Line"
+            />
             <Typography gutterBottom>
                 Line Border Width
             </Typography>
@@ -87,7 +94,7 @@ const ChartOptionsControl = ({ options, setOptions, setChartType, chartType }) =
                 onChange={handleLineTensionChange}
                 valueLabelDisplay="auto"
             />
-            
+
             <Typography gutterBottom>
                 Point Radius
             </Typography>
@@ -109,6 +116,44 @@ const ChartOptionsControl = ({ options, setOptions, setChartType, chartType }) =
             </Typography>
             <Slider
                 value={options.elements.point.radius}
+                min={0}
+                max={10}
+                step={0.5}
+                onChange={handlePointRadiusChange}
+                valueLabelDisplay="auto"
+            />
+        </>
+    );
+
+    const renderBarControls = () => (
+        <>
+            <Typography gutterBottom>
+                Bar Border Width
+            </Typography>
+            <Slider
+                value={options.elements.bar.borderWidth}
+                min={0}
+                max={3}
+                step={0.1}
+                onChange={handleBorderWidthChange}
+                valueLabelDisplay="auto"
+            />
+            <Typography gutterBottom>
+                Bar Border Radius
+            </Typography>
+            <Slider
+                value={options.elements.bar.borderRadius}
+                min={0}
+                max={10}
+                step={0.5}
+                onChange={handlePointRadiusChange}
+                valueLabelDisplay="auto"
+            />
+            <Typography gutterBottom>
+                Bar thiccness
+            </Typography>
+            <Slider
+                value={options.elements.bar.thickness}
                 min={0}
                 max={10}
                 step={0.5}
@@ -140,10 +185,6 @@ const ChartOptionsControl = ({ options, setOptions, setChartType, chartType }) =
 
             <FormGroup>
                 <FormControlLabel
-                    control={<Checkbox checked={options.elements.line.fill} onChange={handleFillChange} />}
-                    label="Fill Line"
-                />
-                <FormControlLabel
                     control={<Checkbox checked={options.scales.y1?.display} onChange={toggleSecondaryAxis} />}
                     label="Enable Secondary Axis"
                 />
@@ -151,6 +192,7 @@ const ChartOptionsControl = ({ options, setOptions, setChartType, chartType }) =
 
             {chartType === 'line' && renderLineControls()}
             {(chartType === 'scatter' || chartType === 'bubble') && renderPointControls()}
+            {chartType === 'bar' && renderBarControls()}
         </div>
     );
 };

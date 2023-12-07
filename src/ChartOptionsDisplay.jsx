@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 
-const ChartOptionsDisplay = ({ options }) => {
+const ChartOptionsDisplay = ({ options, type }) => {
   const [highlightedOptions, setHighlightedOptions] = useState('');
   const prevOptionsRef = useRef({});
 
@@ -28,7 +28,7 @@ const ChartOptionsDisplay = ({ options }) => {
 
     setHighlightedOptions(highlightedText);
     prevOptionsRef.current = options;
-  }, [options]);
+  }, [options, type ]);
 
   return (
     <Box sx={{

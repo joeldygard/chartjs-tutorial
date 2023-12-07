@@ -7,6 +7,7 @@ import ChartOptionsDisplay from './ChartOptionsDisplay';
 import { parseTimestamp } from './helpers/helperFunctions';
 
 const initialStdOptions = {
+  animation: false,
   responsive: true,
   maintainAspectRatio: false,
   elements: {
@@ -20,10 +21,15 @@ const initialStdOptions = {
       hoverRadius: 2.5,
       hitRadius: 10,
     },
+    bar: {
+      borderWidth: 1,
+      borderRadius: 4,
+      barThickness: 15,
+    },
   },
   scales: {
     x: {
-      type: "timeseries",
+      type: "time",
       min: '2021-09-16',
       max: '2021-09-17',
       time: {
@@ -49,6 +55,11 @@ const initialStdOptions = {
     }
   },
   plugins: {
+    decimation: {
+      enabled: true,
+      algorithm: 'lttb',
+      samples: 1000,
+    },
     zoom: {
       pan: {
         enabled: true,
@@ -77,90 +88,89 @@ function App() {
 
   useEffect(() => {
     const datasets = jsonData.chartsData.map((chart) => {
-      const data = chart.data.map((dataPoint) => ({
+      const data = chart.data.map(dataPoint => ({
         x: parseTimestamp(dataPoint.timestamp),
         y: dataPoint.value,
       }));
-
+  
       return {
         label: chart.name,
         data: data,
+        yAxisID: chartOptions.scales.y1 && chartOptions.scales.y1.display && chart.name === "Water Level" ? 'y1' : 'y',
       };
     });
-
+  
     setChartData({ datasets });
-  }, []);
+  }, [jsonData, chartOptions]);
 
-  const handleChartTypeChange = (newChartType) => {
-    setChartType(newChartType);
+  // const handleChartTypeChange = (newChartType) => {
+  //   setChartType(newChartType);
+  //   console.log(newChartType)
+  //   let typeSpecificOptions;
+  //   switch (newChartType) {
+  //     case 'line':
+  //       typeSpecificOptions = {
+  //         elements: {
+  //           line: {
+  //             tension: 0.4,
+  //             borderWidth: 2,
+  //             fill: true,
+  //           },
+  //           point: {
+  //             radius: 3,
+  //             hoverRadius: 5,
+  //             hitRadius: 10,
+  //           },
+  //         },
+  //       };
+  //       break;
+  //     case 'bar':
+  //       typeSpecificOptions = {
+  //         elements: {
+  //           bar: {
+  //             borderWidth: 1,
+  //             borderRadius: 4,
+  //             barThickness: 15,
+  //           },
+  //         },
+  //       };
+  //       break;
+  //     case 'bubble':
+  //       typeSpecificOptions = {
+  //         elements: {
+  //           point: {
+  //             radius: (context) => context.raw.size, // Dynamic size based on data
+  //           },
+  //         },
+  //       };
+  //       break;
+  //     case 'scatter':
+  //       typeSpecificOptions = {
+  //         elements: {
+  //           point: {
+  //             radius: 4,
+  //             hoverRadius: 6,
+  //           },
+  //         },
+  //       };
+  //       break;
+  //     default:
+  //       typeSpecificOptions = {};
+  //   }
+  //   setChartOptions({
+  //     ...initialStdOptions,
+  //     ...typeSpecificOptions,
+  //   });
+  // };
 
-    let typeSpecificOptions;
-    switch (newChartType) {
-      case 'line':
-        typeSpecificOptions = {
-          elements: {
-            line: {
-              tension: 0.4,
-              borderWidth: 2,
-              fill: true,
-            },
-            point: {
-              radius: 3,
-              hoverRadius: 5,
-              hitRadius: 10,
-            },
-          },
-        };
-        break;
-      case 'bar':
-        typeSpecificOptions = {
-          elements: {
-            bar: {
-              borderWidth: 1,
-              borderRadius: 4,
-              barThickness: 15,
-            },
-          },
-        };
-        break;
-      case 'bubble':
-        typeSpecificOptions = {
-          elements: {
-            point: {
-              radius: (context) => context.raw.size, // Dynamic size based on data
-            },
-          },
-        };
-        break;
-      case 'scatter':
-        typeSpecificOptions = {
-          elements: {
-            point: {
-              radius: 4,
-              hoverRadius: 6,
-            },
-          },
-        };
-        break;
-      // Add more cases if needed
-      default:
-        typeSpecificOptions = {};
-    }
-    setChartOptions({
-      ...initialStdOptions,
-      ...typeSpecificOptions,
-    });
-  };
-
-  const stdOptions = {
-    // Standard options for all chart types
-    // ...
-  };
+  // useEffect(() => {
+  //   handleChartTypeChange(chartType);
+  // }, [chartType]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
       <div style={{ flexBasis: '25%', overflow: 'scroll' }}>
-        <ChartOptionsDisplay options={chartOptions} />
+        <ChartOptionsDisplay options={chartOptions} type={chartType} />
       </div>
       <div style={{ flexBasis: '75%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', maxHeight: "100vh" }}>
         <div style={{ height: "60vh", width: "70vw" }}>
